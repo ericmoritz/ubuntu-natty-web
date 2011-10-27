@@ -1,0 +1,3 @@
+[program:{{service}}_uwsgi]
+command=uwsgi-python --ini /var/www/servers/{{domain}}/etc/uwsgi/{{service}}.ini
+user=www-data

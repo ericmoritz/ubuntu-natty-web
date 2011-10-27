@@ -8,7 +8,7 @@ add-apt-repository ppa:uwsgi/release
 apt-get update
 
 # Install all the base packages
-apt-get install git nginx redis-server memcached build-essential python-dev emacs python-setuptools git mercurial
+apt-get install git nginx uwsgi redis-server memcached build-essential python-dev emacs python-setuptools git mercurial
 easy_install pip virtualenv supervisor pastescript
 
 DATE=`date +%Y-%m-%dT%T`
