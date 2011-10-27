@@ -11,5 +11,3 @@ apt-get update
 apt-get install git nginx redis-server memcached build-essential python-dev emacs python-setuptools git mercurial libxml2-dev
 easy_install pip virtualenv supervisor pastescript
 pip install uwsgi
-
-DATE=`date +%Y-%m-%dT%T`
