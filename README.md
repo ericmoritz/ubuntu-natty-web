@@ -35,12 +35,12 @@ build script that starts with the assumption of a null server state.
 
 Let's create a build-site.sh script:
 
-   mkdir ~/project
-   cd ~/project
-   echo "Hello, World" > hello.txt
-   cat > build-site.sh < EOF
-   cp ~/project/hello.txt static/
-   EOF
+    mkdir ~/project
+    cd ~/project
+    echo "Hello, World" > hello.txt
+    cat > build-site.sh < EOF
+    cp ~/project/hello.txt static/
+    EOF
 
 This creates a new build-site.sh who's job is to create a static hello.txt 
 file.
