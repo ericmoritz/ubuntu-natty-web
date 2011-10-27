@@ -6,61 +6,73 @@ This build a base Ubuntu Natty system that has the following infrastructure:
  4. memcached   - transient caching
  5. uwsgi       - wsgi application server
 
-# Commands
+# Principles
 
- 1. setup.sh  - installs the base system
- 2. mksite.sh - creates a new server root at /var/www/servers/
+1. Start from a null state.
+2. Build a common platform for a web service root
+3. A web service root is itself a null state for the apps to start from
+4. Enable local deployment within a VM
 
-# Server config
+# Installation
 
-A site's initial config does only one thing.  Server static content out
-of it's static/ directory.
+As root run:
 
-Dynamic content will need to do two things
+   curl https://raw.github.com/ericmoritz/ubuntu-natty-web/master/bootstrap.sh | bash
 
- 1. Create a etc/supervisord.ini that starts the needed application services
- 2. Config etc/nginx-site.conf to proxy to those services
+This will do the following:
 
-# Local Development
+ 1. checkout the latest version of ubuntu-natty-web to /opt/ubuntu-natty-web
+ 2. Install base services and packages
 
-This system is designed to enable local develop and simple deployment.
+# Development pattern
 
-## Create Site
+Using this allows me to deploy a project quickly to a common starting point.
 
-./mksite.sh [domain]
+## Projects
 
-This creates a new web server root at /var/www/servers/ identified by
-[domain]
+Your project must be developed external to this system and provide a
+build script that starts with the assumption of a null server state.
 
-## Create UWSGI service
+Let's create a build-site.sh script:
 
-To create a uwsgi service do the following
+   mkdir ~/project
+   cd ~/project
+   echo "Hello, World" > hello.txt
+   cat > build-site.sh < EOF
+   cp ~/project/hello.txt static/
+   EOF
 
-./shortcuts/uwsgi/install.sh [domain] [service] [module:app]
+This creates a new build-site.sh who's job is to create a static hello.txt 
+file.
 
-Service is a name for the service and module:app is the wsgi module and wsgi
-app.
+This script acts is a bootstrap to pull your project's resources into
+the server's null state.  In this example, we are generating the
+resource but in practice the resources will be pulled in via a version
+control system
 
-## Custom long running processes
+## Deploying a project
 
-This system use supervisord to manage long running processes per server.
+Now that we have a usable build-site.sh script. we can create a new
+service using this project.
 
-Place your supervisord.d in server's etc/supervisord.d/ directory
+    cd /opt/ubuntu-natty-web/
+    ./mksite.sh example.com
+    
+This creates a /var/www/servers/example.com/ directory.
 
-# Server Deployment
+By default the only thing a new service does is serve
+content out of it's static/ directory.
 
-Each server have ./build-site.sh which handles the building of
-the service.
+Let's deploy our project to this service
 
-Things that this script is responsible would be downloading
-dependancies, checking out code, rendering static content, etc.
+    cd /var/www/servers/example.com
+    bash ~/project/build-site.sh
 
-## Remote server setup
+If nginx is running, we will now be able to curl
+our hello.txt file
 
-From a Ubuntu null state run
+    curl -H "Host: example.com" http://localhost/hello.txt
 
-   sudo curl https://github.com/ericmoritz/ubuntu-natty-web/raw/master/bootstrap.sh | sh
-
-
-
+That's about it.
+    
 
