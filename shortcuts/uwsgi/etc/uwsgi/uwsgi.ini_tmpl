@@ -1,5 +1,5 @@
 [uwsgi]
-socket=unix:///var/www/servers/{{domain}}/www-data/{{service}}.sock
+socket=/var/www/servers/{{domain}}/www-data/{{service}}.sock
 user=www-data
 harakiri=60
 master=true
@@ -7,3 +7,5 @@ module={{module}}
 protocol=uwsgi
 virtualenv=/var/www/servers/{{domain}}/code/env
 chdir=/var/www/servers/{{domain}}/code/app
+env=WRITABLE_ROOT=/var/www/servers/{{domain}}/www-data/data/{{service}}
+vacuum=
