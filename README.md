@@ -127,7 +127,7 @@ that dynamically says "Hello, World!":
 Now let's deploy our WSGI app:
 
     cd /var/www/servers/example.com/
-    ~/project/build.sh
+    bash ~/project/build-site.sh
 
 Update supervisord to pick up the new configuration:
     
