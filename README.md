@@ -122,6 +122,7 @@ that dynamically says "Hello, World!":
     # Rewrite our build-site.sh      
     cat > build-site.sh << EOF
     cp -R ~/project/code/app ./code/app/
+    EOF
 
 Now let's deploy our WSGI app:
 
