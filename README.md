@@ -71,7 +71,7 @@ Let's deploy our project to this service
 
 Now restart nginx to pick up the new site's etc/nginx.conf file 
 
-    sudo /etc/nginx.conf
+    sudo /etc/init.d/nginx restart
 
 We will now be able to curl our hello.txt file
 
@@ -112,16 +112,16 @@ that exists as the python module hello.application.
 Let's modify our hello project to be a WSGI application called hello.application
 that dynamically says "Hello, World!":
 
-      cd ~/project
-      mkdir -p code/app/
-      cat > code/app/hello.py << EOF
-      def application(enivron, start_response):
-            start_response("200 OK", [("Content-Type", "text/plain")])
-            return ["Hello, World!"]
-      EOF
-      # Rewrite our build-site.sh      
-      cat > build-site.sh << EOF
-      cp -R ~/project/code/app ./code/app/
+    cd ~/project
+    mkdir -p code/app/
+    cat > code/app/hello.py << EOF
+    def application(enivron, start_response):
+          start_response("200 OK", [("Content-Type", "text/plain")])
+          return ["Hello, World!"]
+    EOF
+    # Rewrite our build-site.sh      
+    cat > build-site.sh << EOF
+    cp -R ~/project/code/app ./code/app/
 
 Now let's deploy our WSGI app:
 
