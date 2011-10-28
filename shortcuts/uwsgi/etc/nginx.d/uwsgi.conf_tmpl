@@ -2,3 +2,7 @@ location / {
   include uwsgi_params;
   uwsgi_pass unix:///var/www/servers/{{domain}}/www-data/{{service}}.sock;
 }
+
+location /static/ {
+  alias /var/www/servers/{{domain}}/static/;
+}
