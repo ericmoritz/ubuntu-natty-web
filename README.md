@@ -17,7 +17,6 @@ This build a base Ubuntu Natty system that has the following infrastructure:
 As root run:
 
     curl https://raw.github.com/ericmoritz/ubuntu-natty-web/master/bootstrap.sh | bash
-    # => Hello, World!
 
 This will do the following:
 
@@ -38,7 +37,7 @@ Let's create a build-site.sh script:
 
     mkdir ~/project
     cd ~/project
-    echo "Hello, World!" > hello.txt
+    echo 'Hello, World!' > hello.txt
     cat > build-site.sh << EOF
     cp ~/project/hello.txt static/
     EOF
@@ -77,6 +76,7 @@ Now restart nginx to pick up the new site's etc/nginx.conf file
 We will now be able to curl our hello.txt file
 
     curl -H "Host: example.com" http://localhost/hello.txt
+    # => Hello, World!
 
 That's about it.  You're responsible to set up DNS and Networking.
 
