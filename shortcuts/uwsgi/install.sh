@@ -25,3 +25,9 @@ render etc/uwsgi/uwsgi.ini_tmpl > $ROOT/etc/uwsgi/${SERVICE}.ini
 # Create the data root
 mkdir -p $ROOT/www-data/data/${SERVICE}
 chown -R www-data.www-data $ROOT/www-data/data/${SERVICE}
+
+# Create the app root
+mkdir -p $ROOT/code/app
+
+# Create the virtualenv if it doesn't already exist
+virtualenv --no-site-packages $ROOT/code/env
