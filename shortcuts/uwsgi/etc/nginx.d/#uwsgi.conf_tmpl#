@@ -1,4 +1,0 @@
-location / {
-  #uwsgi_pass unix:///var/www/servers/{{domain}}/www-data/{{service}}.sock;
-  uwsgi_pass unix:///var/www/servers/{{domain}}/www-data/{{service}}.sock;
-}
