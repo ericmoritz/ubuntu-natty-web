@@ -8,16 +8,16 @@ This build a base Ubuntu Natty system that has the following infrastructure:
 
 # Principles
 
-1. Start from a null state.
-2. Build a common platform for a web service root
-3. A web service root is itself a null state for the apps to start from
+1. Start from a fresh Natty install
+2. Build a common starting point for a web service root
 4. Enable local deployment within a VM
 
 # Installation
 
 As root run:
 
-   curl https://raw.github.com/ericmoritz/ubuntu-natty-web/master/bootstrap.sh | bash
+    curl https://raw.github.com/ericmoritz/ubuntu-natty-web/master/bootstrap.sh | bash
+    # => Hello, World!
 
 This will do the following:
 
@@ -38,7 +38,7 @@ Let's create a build-site.sh script:
 
     mkdir ~/project
     cd ~/project
-    echo "Hello, World" > hello.txt
+    echo "Hello, World!" > hello.txt
     cat > build-site.sh << EOF
     cp ~/project/hello.txt static/
     EOF
@@ -70,11 +70,71 @@ Let's deploy our project to this service
     cd /var/www/servers/example.com
     bash ~/project/build-site.sh
 
-If nginx is running, we will now be able to curl
-our hello.txt file
+Now restart nginx to pick up the new site's etc/nginx.conf file 
+
+    sudo /etc/nginx.conf
+
+We will now be able to curl our hello.txt file
 
     curl -H "Host: example.com" http://localhost/hello.txt
 
-That's about it.
-    
+That's about it.  You're responsible to set up DNS and Networking.
 
+# Platform shortcuts
+
+## Python / WSGI
+
+Currently there is a shortcut for setting up a server for serving WSGI
+apps. In the the shortcuts/uwsgi directory there is a install.sh
+script that configures uwsgi and supervisord for running a wsgi app.
+
+By default the uwsgi shortcut configures uwsgi to set the PWD to code/app.
+This enables you to create simple single module services with little
+effort using your microframework of choice.
+
+More complex projects should use virtualenv and python deployment tools to
+install your project or derive a shortcut from the built in uwsgi
+shortcut. For instance, one such shortcut could be a Django shortcut,
+Pyramid, or other framework.
+
+## Installing the uwsgi shortcut
+
+To install the uwsgi shortcut, do the following:
+
+    cd /opt/ubuntu-natty-web/shortcuts/uwsgi
+    ./install.sh example.com hello hello:application
+
+This creates the neccessary configuration for a WSGI service called "hello"
+that exists as the python module hello.application.
+
+## hello.py
+
+Let's modify our hello project to be a WSGI application called hello.application
+that dynamically says "Hello, World!":
+
+      cd ~/project
+      mkdir -p code/app/
+      cat > code/app/hello.py << EOF
+      def application(enivron, start_response):
+            start_response("200 OK", [("Content-Type", "text/plain")])
+            return ["Hello, World!"]
+      EOF
+      # Rewrite our build-site.sh      
+      cat > build-site.sh << EOF
+      cp -R ~/project/code/app ./code/app/
+
+Now let's deploy our WSGI app:
+
+    cd /var/www/servers/example.com/
+    ~/project/build.sh
+
+Update supervisord to pick up the new configuration:
+    
+    supervisorctl update
+
+Now we should have a running service:
+
+    curl -H "Host: example.com" http://localhost/
+    # => Hello, World!
+
+The uwsgi shortcut reroutes the static content to /static/
